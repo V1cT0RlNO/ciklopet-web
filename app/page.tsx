@@ -1,36 +1,34 @@
 'use client'
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/router"
-import RegisterForm from "@/components/RegisterForm"
-import LoginForm from "@/components/LoginForm"
 import Image from "next/image"
 import Navbar from "@/components/Navbar"
-import { buttonVariants } from "@/components/ui/button"
 
 export default function Home() {
-  const [showLogin, setShowLogin] = useState(false)
-  const [showRegister, setShowRegister] = useState(false)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   return (
     <>
-      {/*Navbar controla los botones */}
-      <Navbar 
-        onLoginClick={() => setShowLogin(true)}
-        onRegisterClick={() => setShowRegister(true)}
-        isAuthenticated={isAuthenticated}
-        setIsAuthenticated={setIsAuthenticated}
-      />
-
+      <Navbar/>
       {/* SECCIONES */}
       <main className="pt-20 min-h-screen bg-white text-gray-800">
         {/* Hero */}
-        <section id="hero" className="bg-green-600 text-white py-20 px-6 text-center">
-          <div className="max-w-3xl mx-auto">
-            <h1 className="text-5xl font-bold mb-4">Ciklopet</h1>
-              <p className="text-xl mb-6">Reciclamos hoy, salvamos el mañana 🌎</p>
-              <img src="/images/hero-recycle-prueba.jpeg" alt="Reciclaje ecológico" className="mx-auto rounded-lg shadow-lg"/>
+        <section id="hero" className="relative bg-green-600 text-white py-20 px-6 text-center md:text-left">
+          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+            <div>
+              <h1 className="text-5xl font-bold mb-4">Ciklopet</h1>
+                <p className="text-xl mb-6">
+                  Reciclamos hoy, salvamos el mañana 🌎
+                </p>
+            </div>
+            {/* Imagen */}
+            <div className="relative w-full h-64 md:h-96">
+              <Image
+                src="/images/hero-recycle.jpg"
+                alt="Reciclaje ecológico"
+                fill
+                className="object-cover rounded-xl shadow-lg"
+                priority
+              />
+            </div>
           </div>
         </section>
 
@@ -77,44 +75,6 @@ export default function Home() {
         <p>&copy; {new Date().getFullYear()} Ciklopet. Todos los derechos reservados.</p>
       </footer>
     </main>
-
-    {/* Modal Registro */}
-    {showRegister && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white p-6 rounded-xl w-full max-w-md relative">
-          <button
-            className="absolute top-2 right-2 text-gray-500"
-            onClick={() => setShowRegister(false)}
-          >
-
-          </button>
-          <RegisterForm onSuccess={() => {
-            setShowRegister(false)
-            setIsAuthenticated(true)
-          }}
-          />
-        </div>
-      </div>
-    )}
-
-    {/* Modal Login */}
-    {showLogin && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white p-6 rounded-xl w-full max-w-md relative">
-          <button
-            className="absolute top-2 right-2 text-gray-500"
-            onClick={() => setShowLogin(false)}
-          >
-
-          </button>
-          <LoginForm onSuccess={() => {
-            setShowLogin(false)
-            setIsAuthenticated(true)
-          }}
-          />
-        </div>
-      </div>
-    )}
     </>
   );
 }
