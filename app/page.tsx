@@ -1,35 +1,81 @@
 'use client'
 
-import Image from "next/image"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import RegisterForm from "@/components/RegisterForm"
+import LoginForm from "@/components/LoginForm"
 import Navbar from "@/components/Navbar"
 
 export default function Home() {
+  const [showLogin, setShowLogin] = useState(false)
+  const [showRegister, setShowRegister] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/api/logout", { method: "POST" })
+      if (res.ok) {
+        setIsAuthenticated(false)
+        router.push("/") // regirige al home
+      }
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error)
+    }
+  }
 
   return (
     <>
-      <Navbar/>
+      <Navbar
+        isAuthenticated={isAuthenticated}
+        onLoginClick={() => setShowLogin(true)}
+        onRegisterClick={() => setShowRegister(true)}
+        onLogout={handleLogout}
+      />
       {/* SECCIONES */}
       <main className="pt-20 min-h-screen bg-white text-gray-800">
         {/* Hero */}
-        <section id="hero" className="relative bg-green-600 text-white py-20 px-6 text-center md:text-left">
-          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
-            <div>
+        <section id="hero" className="bg-green-600 text-white py-20 px-6 text-center md:text-left md:flex md:items-center md:justify-between">
+          <div className="max-w-xl mx-auto md:mx-0">
               <h1 className="text-5xl font-bold mb-4">Ciklopet</h1>
                 <p className="text-xl mb-6">
                   Reciclamos hoy, salvamos el mañana 🌎
                 </p>
+                <div className="space-x-4">
+                  {!isAuthenticated ? (
+                    <>
+                      <button
+                        className="px-6 py-2 bg-white text-green-600 font-bold rounded hover:bg-gray-100 transition"
+                        onClick={() => setShowRegister(true)}
+                      >
+                        Registrarse
+                      </button>
+                      <button
+                        className="px-6 py-2 bg-white text-green-600 font-bold rounded hover:bg-gray-100 transition"
+                        onClick={() => setShowLogin(true)}
+                      >
+                        Iniciar sesión
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      className="px-6 py-2 bg-red-600 text-white font-bold rounded hover:bg-red-700 transition"
+                      onClick={handleLogout}
+                    >
+                      Cerrar sesión
+                    </button>
+                  )}
+               </div>
             </div>
-            {/* Imagen */}
-            <div className="relative w-full h-64 md:h-96">
-              <Image
-                src="/images/hero-recycle.jpg"
-                alt="Reciclaje ecológico"
-                fill
-                className="object-cover rounded-xl shadow-lg"
-                priority
+            
+            <div className="mt-10 md:mt-0">
+              <img 
+                src="/images/hero-recycle-prueba.jpeg"
+                alt="Reciclaje Ciklopet"
+                className="w-full max-w-sm mx-auto md:mx-0"
               />
             </div>
-          </div>
         </section>
 
         {/* ¿Quiénes somos? */}
@@ -75,6 +121,46 @@ export default function Home() {
         <p>&copy; {new Date().getFullYear()} Ciklopet. Todos los derechos reservados.</p>
       </footer>
     </main>
+
+    {/* Modal Registro */}
+    {showRegister && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-xl w-full max-w-md relative">
+          <button
+            className="absolute top-2 right-2 text-gray-500"
+            onClick={() => setShowRegister(false)}
+          >
+            ✕
+          </button>
+          <RegisterForm
+            onSuccess={() => {
+              setShowRegister(false)
+              setIsAuthenticated(true)
+            }}
+          />
+        </div>
+      </div>
+    )}
+
+    {/* Modal Login */}
+    {showLogin && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-xl w-full max-w-md relative">
+          <button
+            className="absolute top-2 right-2 text-gray-500"
+            onClick={() => setShowLogin(false)}
+          >
+            ✕
+          </button>
+          <LoginForm
+            onSuccess={() => {
+              setShowLogin(false)
+              setIsAuthenticated(true)
+            }}
+          />
+        </div>
+      </div>
+    )}
     </>
-  );
+  )
 }

@@ -1,14 +1,26 @@
-"use client"
+'use client'
 
 import { signIn, signOut, useSession } from "next-auth/react"
 import { Menu, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import Link from "next/link"
+import { buttonVariants } from "./ui/button"
 
-export default function Navbar() {
+interface NavbarProps {
+    isAuthenticated: boolean
+    onLoginClick: () => void
+    onRegisterClick: () => void
+    onLogout: () => void
+}
+
+export default function Navbar({
+    isAuthenticated,
+    onLoginClick,
+    onRegisterClick,
+    onLogout,
+}: NavbarProps) {
     const [scrolled, setScrolled] = useState(false)
     const [isOpen, setIsOpen] = useState(false)
-    const { data: session, status } = useSession()
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -32,8 +44,8 @@ export default function Navbar() {
                     <span className="text-xl font-bold text-green-700">Ciklopet</span>
                 </a>
 
-                {/* Links */}
-                <div className="hidden md:flex space-x-6 text-gray-800 text-sm md:text-base">
+                {/* Links desktop*/}
+                <div className="hidden md:flex space-x-6 text-gray-800 text-sm md:text-base item-center">
                     <a href="#about" className="hover:text-green-600 transition">
                         ¿Quiénes somos?
                     </a>
@@ -44,38 +56,41 @@ export default function Navbar() {
                         Compromiso
                     </a>
 
-                    {status === "loading" ? null : session ? (
-                        <button
-                            onClick={() => signOut({ callbackUrl: "/" })}
-                            className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                            >
-                            Cerrar sesión
-                        </button>
-                    ) : (
+                    {!isAuthenticated ? (
                         <>
                             <button
-                                onClick={() => signIn(undefined, { callbackUrl: "/" })}
+                                onClick={onRegisterClick}
+                                className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition"
+                            >
+                                Registrarse
+                            </button>
+                            <button
+                                onClick={onLoginClick}
                                 className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
                             >
                                 Iniciar sesión
                             </button>
-                            <Link
-                                href="/register"
-                                className="px-3 py-1 border border-green-600 text-green-600 rounded hover:bg-green-50 transition"
-                            >
-                                Registrarse
-                            </Link>
                         </>
+                    ) : (
+                        <button
+                            onClick={onLogout}
+                            className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                        >
+                            Cerrar sesión
+                        </button>
                     )}
                 </div>
 
+                {/* Botón hamburguesa */}
                 <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className="md:hidden text-gray-800">
+                    className="md:hidden text-gray-800"
+                >
                     {isOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
             </div>
 
+            {/* Menú móvil */}
             {isOpen && (
                 <div className="md:hidden px-6 pb-4 bg-white shadow text-sm space-y-2 text-gray-800">
                     <a 
@@ -100,27 +115,37 @@ export default function Navbar() {
                         Compromiso
                     </a>
 
-                    {status === "loading" ? null : session ? (
-                        <button
-                          onClick={() => signOut({ callbackUrl: "/" })}
-                          className="w-full text-center px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                        >
-                            Cerrar sesión
-                        </button>
-                    ) : (
+                    {!isAuthenticated ? (
                         <>
-                           <button
-                              onClick={() => signIn(undefined, { callbackUrl: "/" })}
-                              className="w-full text-center px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition">
-                                Iniciar sesión
-                           </button>
-                           <Link
-                              href="/register"
-                              className="block text-center px-3 py-1 border border-green-600 text-green-600 rounded hover:bg-green-50 transition"
-                              onClick={() => setIsOpen(false)}>
-                                Registrarse
-                           </Link>
+                          <button
+                            onClick={() => {
+                                onRegisterClick()
+                                setIsOpen(false)
+                            }}
+                            className="block w-full text-center px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition"
+                          >
+                            Registrarse
+                          </button>
+                          <button
+                            onClick={() => {
+                                onRegisterClick()
+                                setIsOpen(false)
+                            }}
+                            className="block w-full text-center px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                          >
+                            Iniciar sesión
+                          </button>
                         </>
+                    ) : (
+                        <button
+                            onClick={() => {
+                                onRegisterClick()
+                                setIsOpen(false)
+                            }}
+                            className="block w-full text-center px-3 py-1 bg-red-600 text-white rounded hover:bg-green-700 transition"
+                          >
+                            Registrarse
+                          </button>
                     )}
                 </div>
             )}
