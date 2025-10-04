@@ -6,19 +6,8 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { buttonVariants } from "./ui/button"
 
-interface NavbarProps {
-    isAuthenticated: boolean
-    onLoginClick: () => void
-    onRegisterClick: () => void
-    onLogout: () => void
-}
-
-export default function Navbar({
-    isAuthenticated,
-    onLoginClick,
-    onRegisterClick,
-    onLogout,
-}: NavbarProps) {
+export default function Navbar() {
+    const { data: session } = useSession()
     const [scrolled, setScrolled] = useState(false)
     const [isOpen, setIsOpen] = useState(false)
 
@@ -56,99 +45,38 @@ export default function Navbar({
                         Compromiso
                     </a>
 
-                    {!isAuthenticated ? (
+                    {!session ? (
                         <>
-                            <button
-                                onClick={onRegisterClick}
-                                className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition"
-                            >
-                                Registrarse
-                            </button>
-                            <button
-                                onClick={onLoginClick}
-                                className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
-                            >
+                            <button 
+                              onClick={() => signIn()}
+                              className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                              >
                                 Iniciar sesión
+                            </button>
+                            <button 
+                              onClick={() => alert("Aquí se pondrá el registro")}
+                              className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                              >
+                                Registrarse
                             </button>
                         </>
                     ) : (
-                        <button
-                            onClick={onLogout}
-                            className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                        >
+                        <button 
+                          onClick={() => signOut()}
+                          className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                          >
                             Cerrar sesión
                         </button>
                     )}
                 </div>
 
-                {/* Botón hamburguesa */}
-                <button
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="md:hidden text-gray-800"
-                >
+                <button 
+                  onClick={() => setIsOpen(!isOpen)} 
+                  className="md:hidden text-gray-800"
+                  >
                     {isOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
             </div>
-
-            {/* Menú móvil */}
-            {isOpen && (
-                <div className="md:hidden px-6 pb-4 bg-white shadow text-sm space-y-2 text-gray-800">
-                    <a 
-                      href="#about"
-                      className="block hover:text-green-600"
-                      onClick={() => setIsOpen(false)}
-                    >
-                        ¿Quiénes somos?
-                    </a>
-                    <a 
-                      href="#services"
-                      className="block hover:text-green-600"
-                      onClick={() => setIsOpen(false)}
-                    >
-                        Servicios
-                    </a>
-                    <a 
-                      href="#commitment"
-                      className="block hover:text-green-600"
-                      onClick={() => setIsOpen(false)}
-                    >
-                        Compromiso
-                    </a>
-
-                    {!isAuthenticated ? (
-                        <>
-                          <button
-                            onClick={() => {
-                                onRegisterClick()
-                                setIsOpen(false)
-                            }}
-                            className="block w-full text-center px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition"
-                          >
-                            Registrarse
-                          </button>
-                          <button
-                            onClick={() => {
-                                onRegisterClick()
-                                setIsOpen(false)
-                            }}
-                            className="block w-full text-center px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
-                          >
-                            Iniciar sesión
-                          </button>
-                        </>
-                    ) : (
-                        <button
-                            onClick={() => {
-                                onRegisterClick()
-                                setIsOpen(false)
-                            }}
-                            className="block w-full text-center px-3 py-1 bg-red-600 text-white rounded hover:bg-green-700 transition"
-                          >
-                            Registrarse
-                          </button>
-                    )}
-                </div>
-            )}
         </nav>
     )
 }
