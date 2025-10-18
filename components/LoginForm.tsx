@@ -1,43 +1,35 @@
 'use client'
 
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { useState } from "react"
+import { signIn } from "next-auth/react"
 
-export default function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [message, setMessage] = useState("");
+export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [error, setError] = useState("")
 
-    const handleLogin = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const res = await fetch("/api/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-        });
+        const result = await signIn("credentials", {
+          redirect: false,
+          email,
+          password,
+        })
 
-        const data = await res.json();
-
-        if (res.ok) {
-            setMessage("Inicio de sesión exitoso");
-            if (onSuccess) onSuccess();
+        if (result?.error) {
+          setError("Credenciales enválidas")
         } else {
-            setMessage(`Error: ${data.error}`);
-            }
-        
-        localStorage.setItem("token", data.token);
-
-        window.location.href = "/";
-        };
+          onSuccess()
+        }
+        }
 
     return (
-    <form onSubmit={handleLogin} className="space-y-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <input
         type="email"
-        placeholder="Email"
-        className="w-full border px-3 py-2 rounded-lg"
+        placeholder="Correo electrónico"
+        className="border p-2 rounded"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
@@ -45,18 +37,18 @@ export default function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
       <input
         type="password"
         placeholder="Contraseña"
-        className="w-full border px-3 py-2 rounded-lg"
+        className="border p-2 rounded"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         required
       />
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+        className="bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
       >
         Iniciar Sesión
       </button>
-      {message && <p className="text-center text-sm mt-2">{message}</p>}
+      {error && <p className="text-red-600 text-sm">{error}</p>}
     </form>
-  );
+  )
 }

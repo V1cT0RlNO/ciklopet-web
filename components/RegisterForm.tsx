@@ -1,49 +1,65 @@
-'use client';
+'use client'
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { useState } from "react"
+import { signIn } from "next-auth/react"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 
-export default function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
-    const router = useRouter();
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [message, setMessage] = useState("");
+export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
+    const [name, setName] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [error, setError] = useState("")
+    const [loading, setLoaging] = useState(false)
 
-    async function handleRegister(e: React.FormEvent) {
-      e.preventDefault();
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault()
+      setError("")
+      setLoaging(true)
 
       const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
-      });
+        body: JSON.stringify({ email, password, name })
+      })
 
-      if (res.ok) {
-        setMessage("Usuario registrado con éxito");
-        if (onSuccess) onSuccess();
-      } else {
-        const data = await res.json();
-        setMessage(`Error: ${data.error}`)
+      if (!res.ok) {
+        const data = await res.json()
+        setError(data.error || "Error al registrar")
+        setLoaging(false)
+        return
       }
-    };
+
+      const loginRes = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      })
+
+      setLoaging(false)
+
+      if (loginRes?.error) {
+        setError("Registrado, pero error al iniciar sesión")
+        return
+      }
+
+      onSuccess()
+    }
 
     return (
-      <form onSubmit={handleRegister} className="space-y-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
             type="text"
             placeholder="Tu nombre"
-            className="w-full border px-3 py-2 rounded-lg"
+            className="border p-2 rounded"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
             />
             <input
             type="email"
-            placeholder="Email"
-            className="w-full border px-3 py-2 rounded-lg"
+            placeholder="Correo electrónico"
+            className="border p-2 rounded"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -51,17 +67,19 @@ export default function RegisterForm({ onSuccess }: { onSuccess?: () => void }) 
             <input
             type="password"
             placeholder="Contraseña"
-            className="w-full border px-3 py-2 rounded-lg"
+            className="border p-2 rounded"
             value={password}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             required
             />
             <button
               type="submit"
-              className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">
-              Registrarse
+              disabled={loading}
+              className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
+            >
+              {loading ? "Registrando..." : "Registrarse"}
             </button>
-            {message && <p className="text-center text-sm mt-2">{message}</p>}
+            {error && <p className="text-red-600 text-sm">{error}</p>}
       </form>
     );
 }

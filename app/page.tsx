@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useSession, signOut } from "next-auth/react"
 import RegisterForm from "@/components/RegisterForm"
 import LoginForm from "@/components/LoginForm"
 import Navbar from "@/components/Navbar"
@@ -9,20 +10,14 @@ import Navbar from "@/components/Navbar"
 export default function Home() {
   const [showLogin, setShowLogin] = useState(false)
   const [showRegister, setShowRegister] = useState(false)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
+  const { data: session } = useSession()
   const router = useRouter()
 
+  const isAuthenticated = !!session
+
   const handleLogout = async () => {
-    try {
-      const res = await fetch("/api/logout", { method: "POST" })
-      if (res.ok) {
-        setIsAuthenticated(false)
-        router.push("/") // regirige al home
-      }
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error)
-    }
+    await signOut({ callbackUrl: "/" })
   }
 
   return (
@@ -135,7 +130,6 @@ export default function Home() {
           <RegisterForm
             onSuccess={() => {
               setShowRegister(false)
-              setIsAuthenticated(true)
             }}
           />
         </div>
@@ -155,7 +149,6 @@ export default function Home() {
           <LoginForm
             onSuccess={() => {
               setShowLogin(false)
-              setIsAuthenticated(true)
             }}
           />
         </div>

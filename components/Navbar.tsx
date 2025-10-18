@@ -1,14 +1,24 @@
 'use client'
 
-import { signIn, signOut, useSession } from "next-auth/react"
 import { Menu, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import Link from "next/link"
 
-export default function Navbar() {
-    const { data: session } = useSession()
-    const [scrolled, setScrolled] = useState(false)
-    const [isOpen, setIsOpen] = useState(false)
+interface NavbarProps {
+  isAuthenticated: boolean
+  onLoginClick: () => void
+  onRegisterClick: () => void
+  onLogout: () => void
+}
+
+export default function Navbar({
+  isAuthenticated,
+  onLoginClick,
+  onRegisterClick,
+  onLogout
+}: NavbarProps) {
+  const [scrolled, setScrolled] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -44,31 +54,33 @@ export default function Navbar() {
                         Compromiso
                     </a>
 
-                    {status === "loading" ? null : session ? (
-                        <button
-                          onClick={() => signOut({ callbackUrl: "/" })}
-                          className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                        >
-                            Cerrar sesión
-                        </button>
+                    {/* BOTONES DE SESIÓN */}
+                    {isAuthenticated ? (
+                      <button
+                        onClick={onLogout}
+                        className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                      >
+                        Cerrar sesión
+                      </button>
                     ) : (
-                        <>
-                          <button
-                            onClick={() => signIn(undefined, { callbackUrl: "/" })}
-                            className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
-                          >
-                            Iniciar sesión
-                          </button>
-                          <Link
-                            href="/register"
-                            className="px-3 py-1 border border-green-600 text-green-600 rounded hover:bg-green-50 transition"
-                          >
-                            Registrarse
-                          </Link>
-                        </>
+                      <>
+                        <button
+                          onClick={onLoginClick}
+                          className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                        >
+                          Iniciar sesión
+                        </button>
+                        <button
+                          onClick={onRegisterClick}
+                          className="px-3 py-1 border border-green-600 text-green-600 rounded hover:bg-green-50 transition"
+                        >
+                          Registrarse
+                        </button>
+                      </>
                     )}
                 </div>
 
+                {/* Botón hamburguesa */}
                 <button 
                   onClick={() => setIsOpen(!isOpen)} 
                   className="md:hidden text-gray-800"
@@ -77,15 +89,22 @@ export default function Navbar() {
                 </button>
             </div>
 
+            {/* Mobile menu */}
             {isOpen && (
                 <div className="md:hidden px-6 pb-4 bg-white shadow text-sm space-y-2 text-gray-800">
-                    <a href="#about" className="block hover:text-green-600">¿Quiénes somos?</a>
-                    <a href="#services" className="block hover:text-green-600">Servicios</a>
-                    <a href="#commitment" className="block hover:text-green-600">Compromiso</a>
+                    <a href="#about" className="block hover:text-green-600">
+                      ¿Quiénes somos?
+                    </a>
+                    <a href="#services" className="block hover:text-green-600">
+                      Servicios
+                    </a>
+                    <a href="#commitment" className="block hover:text-green-600">
+                      Compromiso
+                    </a>
 
-                    {session ? (
+                    {isAuthenticated ? (
                     <button
-                      onClick={() => signOut({ callbackUrl: "/" })}
+                      onClick={onLogout}
                       className="w-full text-center px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
                     >
                       Cerrar sesión
@@ -93,17 +112,17 @@ export default function Navbar() {
                 ) : (
                     <>
                       <button
-                        onClick={() => signIn(undefined, { callbackUrl: "/" })}
+                        onClick={onLoginClick}
                         className="w-full text-center px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
                       >
                         Iniciar sesión
                       </button>
-                      <Link
-                        href="/register"
+                      <button
+                        onClick={onRegisterClick}
                         className="w-full text-center px-3 py-1 border border-green-600 text-green-600 rounded hover:bg-green-50 transition"
                       >
                         Registrarse
-                      </Link>
+                      </button>
                     </>
                 )}
                 </div>

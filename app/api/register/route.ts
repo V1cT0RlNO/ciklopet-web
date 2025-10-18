@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
 
 export async function POST(req: Request) {
     try {
@@ -13,7 +14,7 @@ export async function POST(req: Request) {
 
         // Verificar si ya existe usuario
         const existingUser = await prisma.user.findUnique({
-            where: { email },
+            where: { email }
         })
 
         if (existingUser) {
@@ -32,9 +33,19 @@ export async function POST(req: Request) {
             },
         })
 
-        return NextResponse.json({ message: "Usuario registrado con éxito", user: { id: newUser.id, email: newUser.email } })
+        // Generar token
+        const token = jwt.sign(
+            { userId: newUser.id, email: newUser.email },
+            process.env.JWT_SECRET!,
+            { expiresIn: "1d" }
+        )
+
+        const res = NextResponse.json({ message: "Usuario registrado con éxito" })
+        res.cookies.set("token", token, { httpOnly: true, path: "/" })
+
+        return res
     } catch (error) {
-        console.error("Error registrado:", error)
-        return NextResponse.json({ error: "Error en el registro" }, { status: 500 })
+        console.error(error)
+        return NextResponse.json({ error: "Error interno" }, { status: 500 })
     }
 }
