@@ -103,6 +103,74 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Productos destacados */}
+      <section id="products" className="py-16 px-6 bg-white">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-3xl font-semibold mb-6 text-gray-800">
+            Nuestros productos
+          </h2>
+          <p className="text-lg text-gray-600 mb-10">
+            Conocer algunos de los materiales que reciclamos y transformamos.
+            Da clic para explorar todo el catálogo de productos sostenibles ♻️
+          </p>
+
+          {/* Grid con productos de ejemplo */}
+          <div className="gird gap-8 md:grid-cols-3">
+            <div className="bg-gray-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+              <img
+                src="/images/product1-prueba.jpg"
+                alt="Producto 1"
+                className="w-full h-40 object-cover rounded-lg mb-4"
+              />
+              <h3 className="text-lg font-semibold text-gray-800">
+                Botellas PET recicladas
+              </h3>
+              <p className="text-gray-600 text-sm mt-2">
+                Material limpio y procesado, listo para reutilización industrial.
+              </p>
+            </div>
+
+            <div className="bg-gray-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+              <img
+                src="/images/product2-prueba.jpg"
+                alt="Producto 2"
+                className="w-full h-40 object-cover rounded-lg mb-4"
+              />
+              <h3 className="text-lg font-semibold text-gray-800">
+                Escamas de PET
+              </h3>
+              <p className="text-gray-600 text-sm mt-2">
+                Escamas de alta pureza ideales para procesos de extrusión
+              </p>
+            </div>
+
+            <div className="bg-gray-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+              <img
+                src="/images/product3-prueba.jpg"
+                alt="Producto 3"
+                className="w-full h-40 object-cover rounded-lg mb-4"
+              />
+              <h3 className="text-lg font-semibold text-gray-800">
+                Resina reciclada
+              </h3>
+              <p className="text-gray-600 text-sm mt-2">
+                Material procesado a partir de plástico recuperado.
+              </p>
+            </div>
+          </div>
+
+          {/* Botón para redirigir a /products */}
+          <div className="mt-10">
+            <button
+              onClick={() => router.push("/products")}
+              className="px-8 py-3 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 transition duration-300"
+            >
+              Ver catálogo completo
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* Compromiso ecológico */}
       <section id="commitment" className="py-16 px-6 max-w-4xl mx-auto text-center">
         <h2 className="text-3xl font-semibold mb-4">Nuestro compromiso ecológico</h2>

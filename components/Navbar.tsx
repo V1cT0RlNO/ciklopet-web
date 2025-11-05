@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter, usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import Link from "next/link"
@@ -19,6 +20,8 @@ export default function Navbar({
 }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const router = useRouter()
+  const pathname = usePathname()
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -53,6 +56,18 @@ export default function Navbar({
                     <a href="#commitment" className="hover:text-green-600 transition">
                         Compromiso
                     </a>
+
+                    {/* Botón de ver productos en estado activo*/}
+                    <button
+                      onClick={() => router.push("/products")}
+                      className={`´x-3 py-1 rounded transition ${
+                        pathname === "/products"
+                          ? "bg-green-700 text-white" // Activo
+                          : "bg-green-600 text-white hover:bg.green-700" // Normal
+                          }`}
+                    >
+                      Ver productos
+                    </button>
 
                     {/* BOTONES DE SESIÓN */}
                     {isAuthenticated ? (
@@ -101,6 +116,21 @@ export default function Navbar({
                     <a href="#commitment" className="block hover:text-green-600">
                       Compromiso
                     </a>
+
+                    {/* Botón "Ver productos" en mobile */}
+                    <button
+                      onClick={() => {
+                        setIsOpen(false)
+                        router.push("/products")
+                      }}
+                      className={`w-full text-center px-3 py-1 rounded transition ${
+                        pathname === "/products"
+                          ? "bg-green-700 text-white"
+                          : "bg-green-700 text-white hover:bg-green-700"
+                      }`}
+                    >
+                      Ver productos
+                    </button>
 
                     {isAuthenticated ? (
                     <button
