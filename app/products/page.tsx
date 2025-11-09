@@ -1,84 +1,111 @@
+'use client'
+
+import { useEffect, useState } from "react"
+import Navbar from "@/components/Navbar"
+import { useSession, signOut } from "next-auth/react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { ArrowLeft } from "lucide-react"
 
-export const dynamic = "force-dynamic"
+export default function ProductsPage() {
+    const router = useRouter()
+    const { data: session } = useSession()
+    const [products, setProducts] = useState<any[]>([])
+    const isAuthenticated = !!session
 
-export default async function ProductsPage() {
-    
-    const baseUrl = 
-      process.env.NEXT_PUBLIC_BASE_URL ||
-      (typeof window === "undefined"
-        ? "http://localhost:3000"
-        : window.location.origin)
+    const handleLogout = async () => {
+        await signOut({ callbackUrl:'/' })
+    }
 
-        const res = await fetch(`${baseUrl}/api/products`, {
-          cache: "no-store",
-        })
-
-        if (!res.ok) {
-            throw new Error("Error al cargar los productos")
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const res = await fetch('/api/products')
+                if (!res.ok) throw new Error('Error al cargar productos')
+                const data = await res.json()
+            setProducts(data)
+            } catch (err) {
+                console.error(err)
+            }
         }
-
-        const products = await res.json()
+        fetchProducts()
+    }, [])
 
     // Obtener el número de WhatsApp desde el .env
     const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "525547652029"
 
     return (
-        <main className="min-h-screen pt-20 bg-white text-gray-800">
-            <section className="py-16 px-6 max-w-6xl mx-auto">
-        <div className="p-8">
-            <h1 className="text-3xl font-bold mb-6 text-green-700 text-center">
-                Nuestros Materiales y Productos
-            </h1>
+        <>
+        <Navbar
+          isAuthenticated={isAuthenticated}
+          onLoginClick={() => {}}
+          onRegisterClick={() => {}}
+          onLogout={handleLogout}
+        />
+        <main className="pt-24 px-6 min-h-screen bg-gray-50 text-gray-800">
+            <section className="max-w-6xl mx-auto text-center mb-12">
+                <h1 className="text-4xl font-bold text-green-700 mb-4">Nuestros productos</h1>
+                <p>
+                    Conoce los materiales reciclables y productos ecológicos que ofrecemos.
+                </p>
 
-            {products.length === 0 ? (
-                <p className="text-center text-gray-600">No hay productos disponibles por ahora</p>
-            ) : (
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {products.map((product:any) => (
+                {/* Botones de navegación */}
+                <div className="flex justify-center gap-4 mt-8">
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center gap-2 bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        Retroceder
+                    </button>
+
+                    <Link
+                      href="/"
+                      className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+                    >
+                      Ir al inicio
+                    </Link>
+                </div>
+            </section>
+
+            {/* Lista de productos */}
+            <section className="max-w-6xl mx-auto grid gap-8 md:grid-cols-3">
+                {products.length > 0 ? (
+                    products.map((product) => (
                         <div
                           key={product.id}
-                          className="bg-white border rounded-xl shadow hover:shadow-lg transition p-4 flex flex-col"
+                          className="bg-white rounded-xl shadow hover:shadow-lg transition p-6 text-center"
                         >
-                            {product.image && (
-                                <img
-                                  src={product.image}
-                                  alt={product.name}
-                                  className="w-full h-48 object-cover rounded mb-3"
-                                />
-                            )}
-                            <h2 className="text-xl font-semibold mb-1">{product.name}</h2>
-                            <p className="text-gray-600 mb-2">{product.description}</p>
-                            {product.price && (
-                                <p className="text-green-700 font-bold mb-3">${product.price.toFixed(2)}</p>
-                            )}
-
-                            {/* Botón de WhatsApp dinámico */}
-                            <a
-                              href={`https://wa.me/{whatsappNumber}$?text=¡Hola!%20Estoy%20interesado%20en%20el%20producto%20${encodeURIComponent(
-                                product.name
-                              )}`}
+                            <img
+                              src={product.image || '/images/product-placeholder.png'}
+                              alt={product.name}
+                              className="w-full h-48 object-cover rounded-lg mb-4"
+                            />
+                            <h2 className="text-xl font-semibold text-green-700 mb-2">{product.name}</h2>
+                            <p className="text-gray-600 mb-4">{product.description}</p>
+                            <p>
+                                {product.price ? `$${product.price} MXN` : 'Consultar precio'}
+                            </p>
+                            <Link
+                              href={`https://wa.me/${whatsappNumber}`}
                               target="_blank"
-                              rel="noopener noreferrer"
-                              className="mt-auto bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 text-center transition"
+                              className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
                             >
-                                Cotizar por WhatsApp
-                            </a>
+                              Contactar por WhatsApp
+                            </Link>
                         </div>
-                    ))}
-                </div>
-            )}
-
-            <div className="text-center mt-10">
-                <Link
-                  href="/"
-                  className="text-green-700 font-medium hover:underline"
-                >
-                   ← Volver al inicio
-                </Link>
-            </div>
-        </div>
-        </section>
+                    ))
+                ) : (
+                    <p className="col-span-3 text-gray-500 text-center">
+                        No hay productos disponibles por el momento
+                    </p>
+                )}
+            </section>
         </main>
+
+        <footer className="bg-green-600 text-white py-6 text-center mt-16">
+            <p>&copy; {new Date().getFullYear()} Ciklopet. Todos los derechos reservados.</p>
+        </footer>
+        </>
     )
 }

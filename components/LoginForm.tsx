@@ -20,7 +20,11 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
         if (result?.error) {
           setError("Credenciales enválidas")
         } else {
-          onSuccess()
+          if (typeof onSuccess === "function") {
+            onSuccess()
+          } else {
+            window.location.href = "/admin"
+          }
         }
         }
 

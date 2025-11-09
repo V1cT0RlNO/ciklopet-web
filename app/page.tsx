@@ -110,7 +110,7 @@ export default function Home() {
             Nuestros productos
           </h2>
           <p className="text-lg text-gray-600 mb-10">
-            Conocer algunos de los materiales que reciclamos y transformamos.
+            Conoce algunos de los materiales que reciclamos y transformamos.
             Da clic para explorar todo el catálogo de productos sostenibles ♻️
           </p>
 
