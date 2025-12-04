@@ -6,9 +6,12 @@ import { useSession, signOut } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import WhatsAppContactModal from "@/components/WhatsAppContactModal"
 
 export default function ProductsPage() {
     const router = useRouter()
+    const [showContact, setShowContact] = useState(false)
     const { data: session } = useSession()
     const [products, setProducts] = useState<any[]>([])
     const isAuthenticated = !!session
@@ -86,13 +89,12 @@ export default function ProductsPage() {
                             <p>
                                 {product.price ? `$${product.price} MXN` : 'Consultar precio'}
                             </p>
-                            <Link
-                              href={`https://wa.me/${whatsappNumber}`}
-                              target="_blank"
+                            <Button onClick={() => setShowContact(true)}
                               className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
                             >
                               Contactar por WhatsApp
-                            </Link>
+                            </Button>
+                            <WhatsAppContactModal open={showContact} onClose={() => setShowContact(false)} />
                         </div>
                     ))
                 ) : (

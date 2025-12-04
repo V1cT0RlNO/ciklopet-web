@@ -36,6 +36,15 @@ model User {
   sessions      Session[]
 }
 
+model ContactRequest {
+  id        String   @id @default(uuid())
+  name      String?
+  phone     String
+  rfc       String
+  message   String?
+  createAt  DateTime @default(now())
+}
+
 enum Role {
   ADMIN
   USER
