@@ -16,6 +16,7 @@ export default function WhatsAppContactModal({ open, onClose }: Props) {
     const [phone, setPhone] = useState("")
     const [rfc, setRfc] = useState("")
     const [message, setMessage] = useState("")
+    const [product, setProduct] = useState("")
     const [loading, setLoading] = useState(false)
 
     const handleSend = async () => {
@@ -31,7 +32,13 @@ export default function WhatsAppContactModal({ open, onClose }: Props) {
             await fetch("/api/contact", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, phone, rfc, message }),
+                body: JSON.stringify({ 
+                    name, 
+                    phone, 
+                    rfc, 
+                    message,
+                    product
+                })
             })
 
             // Redirección a WhatsApp
@@ -42,6 +49,7 @@ export default function WhatsAppContactModal({ open, onClose }: Props) {
 Nombre: ${name || "N/A"}
 Teléfono: ${phone}
 RFC: ${rfc}
+Producto: ${product || "N/A"}
 Mensaje: ${message || "Sin mensaje adicional"}`
       );
 
@@ -75,6 +83,11 @@ Mensaje: ${message || "Sin mensaje adicional"}`
                     <div>
                         <Label>RFC *</Label>
                         <Input value={rfc} onChange={(e) => setRfc(e.target.value)} />
+                    </div>
+
+                    <div>
+                        <Label>Producto (opcional)</Label>
+                        <Input value={product} onChange={(e) => setProduct(e.target.value)} />
                     </div>
 
                     <div>
