@@ -1,19 +1,11 @@
-'use client'
 
-import { useEffect, useState } from "react"
+import { prisma } from "@/lib/prisma"
+import { ContactRequestStatusSelect } from "@/components/ContactRequestStatusSelect"
 
-export default function AdminContactPage() {
-    const [contact, setContact] = useState<any[]>([])
-
-    useEffect(() => {
-        const fetchcontactRequest = async () => {
-            const res = await fetch("/api/contact")
-            const data = await res.json()
-            setContact(data)
-        }
-
-        fetchcontactRequest()
-    }, [])
+export default async function AdminContactPage() {
+    const contactsRequest = await prisma.contactRequest.findMany({
+        orderBy: { createdAt: "desc" }
+    })
 
     return (
         <main className="p-8">
@@ -32,7 +24,7 @@ export default function AdminContactPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {contact.map((contactRequest) => (
+                        {contactsRequest.map((contactRequest) => (
                             <tr key={contactRequest.id} className="border-t">
                                 <td className="p-2">{contactRequest.name}</td>
                                 <td className="p-2">{contactRequest.rfc}</td>
@@ -41,7 +33,12 @@ export default function AdminContactPage() {
                                 <td className="p-2">
                                     {new Date(contactRequest.createdAt).toLocaleDateString()}
                                 </td>
-                                <td className="p-2">{contactRequest.status}</td>
+                                <td className="p-2">
+                                    <ContactRequestStatusSelect
+                                      id={contactRequest.id}
+                                      initialStatus={contactRequest.status}
+                                    />
+                                    {contactRequest.status}</td>
                             </tr>
                         ))}
                     </tbody>

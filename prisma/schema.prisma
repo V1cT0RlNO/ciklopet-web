@@ -36,15 +36,22 @@ model User {
   sessions      Session[]
 }
 
+enum ContactRequestStatus {
+  NEW
+  CONTACTED
+  CLOSED
+}
+
 model ContactRequest {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   name      String?
   phone     String
   rfc       String
   message   String?
   product   String?
-  status    String   @default("pending")  // pending | contacted | closed
-  createdAt  DateTime @default(now())
+  status    ContactRequestStatus   @default(NEW)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }
 
 enum Role {

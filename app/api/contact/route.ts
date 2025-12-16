@@ -36,8 +36,19 @@ export async function GET() {
     const contactRequest = await prisma.contactRequest.findMany({
         orderBy: {
             createdAt: "desc"
-        }
+        },
     })
 
     return NextResponse.json(contactRequest)
+}
+
+export async function PATCH(req: Request) {
+    const { id, status } = await req.json()
+
+    const updated = await prisma.contactRequest.update({
+        where: { id },
+        data: { status }
+    })
+
+    return NextResponse.json(updated)
 }
