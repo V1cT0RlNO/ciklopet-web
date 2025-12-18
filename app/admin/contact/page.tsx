@@ -1,6 +1,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { ContactRequestStatusSelect } from "@/components/ContactRequestStatusSelect"
+import { ContactRequestActions } from "@/components/ContactRequestActions"
 
 export default async function AdminContactPage() {
     const contactsRequest = await prisma.contactRequest.findMany({
@@ -21,6 +22,7 @@ export default async function AdminContactPage() {
                             <th className="p-2">Producto</th>
                             <th className="p-2">Fecha</th>
                             <th className="p-2">Estado</th>
+                            <th className="p-2">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,6 +41,9 @@ export default async function AdminContactPage() {
                                       initialStatus={contactRequest.status}
                                     />
                                     {contactRequest.status}</td>
+                                    <td className="p-2">
+                                        <ContactRequestActions id={contactRequest.id} />
+                                    </td>
                             </tr>
                         ))}
                     </tbody>

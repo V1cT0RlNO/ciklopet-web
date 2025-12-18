@@ -26,7 +26,7 @@ export function ContactRequestStatusSelect({ id, initialStatus }: {
         >
             <option value="NEW">Nuevo</option>
             <option value="CONTACTED">Contactado</option>
-            <option value="CLOSED">Cerrado</option>
+            <option value="ARCHIVED">Archivado</option>
         </select>
     )
 }
