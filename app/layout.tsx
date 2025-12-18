@@ -2,6 +2,7 @@
 
 import { Toaster } from "sonner"
 import { SessionProvider } from "next-auth/react"
+import Footer from "@/components/Footer"
 import "./globals.css"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -12,6 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
             <Toaster richColors position="top-right" />
         </SessionProvider>
+        <Footer />
       </body>
     </html>
   )

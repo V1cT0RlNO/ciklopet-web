@@ -52,6 +52,13 @@ export default function Home() {
                       >
                         Iniciar sesión
                       </button>
+                      <a
+                        href="https://wa.me/5215547652029"
+                        target="_blank"
+                        className="px-6 py-2 bg-white text-green-600 font-bold rounded hover:bg-gray-100 transition"
+                      >
+                        Contactar por WhatsApp
+                      </a>
                     </>
                   ) : (
                     <button
@@ -178,11 +185,6 @@ export default function Home() {
           Cada kilo de plástico reciclado es un paso hacia un planeta más sano. En Ciklopet, unimos tecnología, conciencia y acción.
         </p>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-green-600 text-white py-6 text-center">
-        <p>&copy; {new Date().getFullYear()} Ciklopet. Todos los derechos reservados.</p>
-      </footer>
     </main>
 
     {/* Modal Registro */}

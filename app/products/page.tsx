@@ -104,10 +104,6 @@ export default function ProductsPage() {
                 )}
             </section>
         </main>
-
-        <footer className="bg-green-600 text-white py-6 text-center mt-16">
-            <p>&copy; {new Date().getFullYear()} Ciklopet. Todos los derechos reservados.</p>
-        </footer>
         </>
     )
 }
