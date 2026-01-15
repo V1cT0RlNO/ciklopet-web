@@ -13,6 +13,7 @@ export default function AdminProductsPage() {
     const [description, setDescription] = useState("")
     const [price, setPrice] = useState<number | undefined>()
     const [image, setImage] = useState("")
+    const [available, setAvailable] = useState("")
 
     // Cargar productos existentes
     useEffect(() => {
@@ -36,7 +37,7 @@ export default function AdminProductsPage() {
         const res = await fetch(url, {
           method,
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, description, price, image })
+          body: JSON.stringify({ name, description, price, image, available })
         })
 
         if (res.ok) {
@@ -61,15 +62,16 @@ export default function AdminProductsPage() {
       setDescription(product.description)
       setPrice(product.price)
       setImage(product.image)
+      setAvailable(product.available)
     }
 
     // Eliminar producto
-    const handleDelete = async (productId: number) => {
+    const handleDelete = async (id: string) => {
       if (!confirm("¿Seguro que deseas eliminar este producto?")) return
 
-      const res = await fetch(`/api/products/${productId}`, { method: "DELETE" })
+      const res = await fetch(`/api/products/${id}`, { method: "DELETE" })
       if (res.ok) {
-        setProducts(products.filter((p) => p.id !== productId))
+        setProducts(products.filter((p) => p.id !== id))
       }
     }
 
@@ -80,6 +82,7 @@ export default function AdminProductsPage() {
       setDescription("")
       setPrice(undefined)
       setImage("")
+      setAvailable("")
     }
 
     if (loading) return <p className="p-8 text-center">Cargando productos...</p>
@@ -133,6 +136,15 @@ export default function AdminProductsPage() {
                       required
                     />
 
+                    <input
+                      type="text"
+                      placeholder="Disponibilidad (opcional)"
+                      className="border rounded p-2"
+                      value={available || ""}
+                      onChange={(e) => setAvailable(e.target.value)}
+                      required
+                    />
+
                     <div>
                       <button
                       type="submit"
@@ -177,6 +189,7 @@ export default function AdminProductsPage() {
                   )}
                   <h2 className="text-xl font-semibold">{p.name}</h2>
                   <p className="text-gray-600">{p.description}</p>
+                  <p className="text-gray-600">{p.available}</p>
                   {p.price && (
                     <p className="text-green-700 font-bold mt-2">${p.price.toFixed(2)}</p>
                   )}
@@ -189,7 +202,7 @@ export default function AdminProductsPage() {
                       Editar
                     </button>
                     <button
-                      onClick={() => handleDelete(p)}
+                      onClick={() => handleDelete(p.id)}
                       className="flex-1 bg-red-500 text-white py-1 rounded hover:bg-red-600 transition"
                     >
                       Eliminar
