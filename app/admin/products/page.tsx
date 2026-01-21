@@ -55,6 +55,23 @@ export default function AdminProductsPage() {
         setIsSubmitting(false)
     }
 
+    // Función para subir imágen
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (!file) return
+
+      const formData = new FormData()
+      formData.append("file", file)
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      })
+
+      const data = await res.json()
+      setImage(data.url)
+    }
+
     // Editar producto
     const handleEdit = (product: any) => {
       setId(product.id)
@@ -128,13 +145,20 @@ export default function AdminProductsPage() {
                     />
 
                     <input
-                      type="text"
+                      type="file"
+                      accept="image/"
                       placeholder="URL de la imagen (opcional)"
                       className="border rounded p-2"
-                      value={image}
-                      onChange={(e) => setImage(e.target.value)}
+                      onChange={(e) => handleImageUpload(e)}
                       required
                     />
+                    {image && (
+                      <img
+                        src={image}
+                        alt="Preview"
+                        className="w-full h-40 object-cover rounded mt-2"
+                      />
+                    )}
 
                     <input
                       type="text"
