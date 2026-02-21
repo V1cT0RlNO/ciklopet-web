@@ -37,7 +37,7 @@ export async function POST(req: Request) {
 export async function GET() {
     const session = await getServerSession(authOptions)
 
-    if (!session || session.user.role !== "admin") {
+    if (!session || session.user.role !== "ADMIN") {
         return NextResponse.json(
             { error: "No autorizado" },
             { status: 403 }
@@ -56,7 +56,7 @@ export async function GET() {
 export async function PATCH(req: Request) {
     const session = await getServerSession(authOptions)
 
-    if (!session || session.user.role !== "admin") {
+    if (!session || session.user.role !== "ADMIN") {
         return NextResponse.json(
             { error: "No autorizado" },
             {  status: 403}

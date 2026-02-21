@@ -7,7 +7,7 @@ import { getServerSession } from "next-auth"
 export async function GET() {
     const session = await getServerSession(authOptions)
 
-    if (!session || session.user.role !== "admin") {
+    if (!session || session.user.role !== "ADMIN") {
         return NextResponse.json(
             { error: "No autorizado" },
             { status: 403 }
@@ -30,7 +30,7 @@ export async function PATCH(request: Request) {
     try {
         const session = await getServerSession(authOptions)
 
-        if (!session || session.user.role !== "admin") {
+        if (!session || session.user.role !== "ADMIN") {
             return NextResponse.json(
                 { error: "No autorizado" },
                 { status: 403 }
@@ -62,7 +62,7 @@ export async function DELETE(request: Request) {
     try {
         const session = await getServerSession(authOptions)
 
-        if (!session || session.user.role !== "admin") {
+        if (!session || session.user.role !== "ADMIN") {
             return NextResponse.json(
                 { error: "No autorizado" },
                 { status: 403 }

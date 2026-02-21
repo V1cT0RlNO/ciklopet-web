@@ -25,7 +25,6 @@ export default function AdminPage() {
     const fetchUsers = async () => {
         const res = await fetch("/api/users")
         const data = await res.json()
-        console.log("Users response:", data)
         setUsers(data)
         setLoading(false)
     }
@@ -93,24 +92,24 @@ export default function AdminPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {users.map((users) => (
-                                <tr key={users.id} className="hover:bg-gray-50">
-                                    <td className="p-2 border">{users.name}</td>
-                                    <td className="p-2 border">{users.email}</td>
-                                    <td className="p-2 border">{users.role}</td>
+                            {users.map((user) => (
+                                <tr key={user.id} className="hover:bg-gray-50">
+                                    <td className="p-2 border">{user.name}</td>
+                                    <td className="p-2 border">{user.email}</td>
+                                    <td className="p-2 border">{user.role}</td>
                                     <td className="p-2 border text-center space-x-2">
                                         <button
                                           onClick={() => {
-                                            setEditingUser(users)
-                                            setNewName(users.name)
-                                            setNewRole(users.role)
+                                            setEditingUser(user)
+                                            setNewName(user.name)
+                                            setNewRole(user.role)
                                           }}
                                           className="px-2 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition"
                                         >
                                             Editar
                                         </button>
                                         <button
-                                          onClick={() => handleDelete(users.id)}
+                                          onClick={() => handleDelete(user.id)}
                                           className="px-2 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition"
                                         >
                                             Eliminar
