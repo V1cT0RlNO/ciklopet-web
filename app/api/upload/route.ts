@@ -1,8 +1,20 @@
 import { NextResponse } from "next/server"
 import cloudinary from "@/lib/cloudinary"
+import { authOptions } from "../auth/[...nextauth]/route"
+import { getServerSession } from "next-auth"
 
 export async function POST(req: Request) {
     try {
+
+        const session = await getServerSession(authOptions)
+
+        if (!session || session.user.role !== "admin") {
+            return NextResponse.json(
+                { error: "No autorizado" },
+                { status: 403 }
+            )
+        }
+
         const data = await req.formData()
         const file = data.get("file") as File
 

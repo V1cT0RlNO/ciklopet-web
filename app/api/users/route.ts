@@ -1,8 +1,19 @@
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
+import { authOptions } from "../auth/[...nextauth]/route"
+import { getServerSession } from "next-auth"
 
 // Obtener todos los usuarios
 export async function GET() {
+    const session = await getServerSession(authOptions)
+
+    if (!session || session.user.role !== "admin") {
+        return NextResponse.json(
+            { error: "No autorizado" },
+            { status: 403 }
+        )
+    }
+
     const users = await prisma.user.findMany({
         select: {
             id: true,
@@ -17,6 +28,15 @@ export async function GET() {
 // Editar el rol o nombre del usuario
 export async function PATCH(request: Request) {
     try {
+        const session = await getServerSession(authOptions)
+
+        if (!session || session.user.role !== "admin") {
+            return NextResponse.json(
+                { error: "No autorizado" },
+                { status: 403 }
+            )
+        }
+
         const { id, name, role } = await request.json()
 
         if (!id) {
@@ -40,6 +60,15 @@ export async function PATCH(request: Request) {
 // Eliminar usuario
 export async function DELETE(request: Request) {
     try {
+        const session = await getServerSession(authOptions)
+
+        if (!session || session.user.role !== "admin") {
+            return NextResponse.json(
+                { error: "No autorizado" },
+                { status: 403 }
+            )
+        }
+
         const { id } = await request.json()
 
         if (!id) {

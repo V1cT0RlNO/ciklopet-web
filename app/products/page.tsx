@@ -5,7 +5,6 @@ import Navbar from "@/components/Navbar"
 import { useSession, signOut } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import WhatsAppContactModal from "@/components/WhatsAppContactModal"
 
@@ -54,13 +53,6 @@ export default function ProductsPage() {
 
                 {/* Botones de navegación */}
                 <div className="flex justify-center gap-4 mt-8">
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center gap-2 bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
-                    >
-                        <ArrowLeft className="w-4 h-4" />
-                        Retroceder
-                    </button>
 
                     <Link
                       href="/"

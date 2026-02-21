@@ -24,6 +24,16 @@ export async function GET(_req: Request, context: { params: Promise<{ id: string
  * PUT /api/products/:id
  */
 export async function PUT(req: Request, context: { params: Promise<{ id: string }> }) {
+
+    const session = await getServerSession(authOptions)
+
+    if (!session || session.user.role !== "ADMIN") {
+        return NextResponse.json(
+            { error: "No autorizado" },
+            { status: 401 }
+        )
+    }
+
     const { id } = await context.params
     const body = await req.json()
 
@@ -55,8 +65,12 @@ export async function DELETE(_req: Request, context: { params:  Promise<{ id: st
         }
 
         const session = await getServerSession(authOptions)
+        
         if (!session || session.user.role !== "ADMIN") {
-            return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+            return NextResponse.json(
+                { error: "No autorizado" },
+                { status: 401 }
+            )
         }
 
         await prisma.product.delete({

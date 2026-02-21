@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
+import { authOptions } from "../auth/[...nextauth]/route"
+import { getServerSession } from "next-auth"
 
 export async function POST(req: Request) {
     try {
@@ -33,6 +35,15 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
+    const session = await getServerSession(authOptions)
+
+    if (!session || session.user.role !== "admin") {
+        return NextResponse.json(
+            { error: "No autorizado" },
+            { status: 403 }
+        )
+    }
+
     const contactRequest = await prisma.contactRequest.findMany({
         orderBy: {
             createdAt: "desc"
@@ -43,6 +54,15 @@ export async function GET() {
 }
 
 export async function PATCH(req: Request) {
+    const session = await getServerSession(authOptions)
+
+    if (!session || session.user.role !== "admin") {
+        return NextResponse.json(
+            { error: "No autorizado" },
+            {  status: 403}
+        )
+    }
+
     const { id, status } = await req.json()
 
     const updated = await prisma.contactRequest.update({

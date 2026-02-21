@@ -42,7 +42,7 @@ export default function WhatsAppContactModal({ open, onClose }: Props) {
             })
 
             // Redirección a WhatsApp
-            const whatsappNumber = "525547652029"
+            const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER
             const text = encodeURIComponent(
                 `Hola, estoy interesado.
 
