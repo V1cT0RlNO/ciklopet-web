@@ -10,7 +10,7 @@ export async function PATCH(
 ) {
     const session = await getServerSession(authOptions)
 
-        if (!session || session.user.role !== "admin") {
+        if (!session || session.user.role !== "ADMIN") {
             return NextResponse.json(
                 { error: "No autorizado" },
                 { status: 403 }
@@ -36,7 +36,7 @@ export async function DELETE(
 ) {
     const session = await getServerSession(authOptions)
 
-        if (!session || session.user.role !== "admin") {
+        if (!session || session.user.role !== "ADMIN") {
             return NextResponse.json(
                 { error: "No autorizado" },
                 { status: 403 }
