@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth"
 import { signOut, useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 import { redirect } from "next/navigation"
-import { authOptions } from "../api/auth/[...nextauth]/route"
+import { authOptions } from "@/lib/auth"
 import UserTable from "./UserTable"
 
 type User = {
